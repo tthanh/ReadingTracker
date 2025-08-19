@@ -36,7 +36,7 @@ public class UserBookConfiguration : IEntityTypeConfiguration<UserBook>
                 .HasMaxLength(300)
                 .HasColumnName("Author");
 
-            bookInfo.Property(bi => bi.ISBN)
+            bookInfo.Property(bi => bi.Isbn)
                 .HasMaxLength(20)
                 .HasColumnName("ISBN");
 
@@ -73,12 +73,11 @@ public class UserBookConfiguration : IEntityTypeConfiguration<UserBook>
             progress.Property(p => p.TotalPages)
                 .HasColumnName("TotalPagesInProgress");
 
-            progress.Property(p => p.PercentageComplete)
+            progress.Property(p => p.Percentage)
                 .HasColumnName("PercentageComplete")
                 .HasPrecision(5, 2);
 
-            progress.Property(p => p.IsComplete)
-                .HasColumnName("IsComplete");
+            progress.Ignore(p => p.IsComplete);
         });
 
         // Configure ReadingStatus enum
@@ -100,8 +99,7 @@ public class UserBookConfiguration : IEntityTypeConfiguration<UserBook>
         builder.Property(ub => ub.PersonalNotes)
             .HasMaxLength(2000);
 
-        builder.Property(ub => ub.PersonalRating)
-            .HasCheckConstraint("CK_UserBooks_PersonalRating", "[PersonalRating] >= 1 AND [PersonalRating] <= 5");
+        builder.Property(ub => ub.PersonalRating);
 
         // Configure relationships
         builder.HasMany(ub => ub.ReadingSessions)
@@ -135,5 +133,11 @@ public class UserBookConfiguration : IEntityTypeConfiguration<UserBook>
         builder.Ignore(ub => ub.TotalReadingSessions);
         builder.Ignore(ub => ub.LastReadingSessionDate);
         builder.Ignore(ub => ub.TimeSinceLastSession);
+
+        // Constraints using modern syntax
+        builder.ToTable(t =>
+        {
+            t.HasCheckConstraint("CK_UserBooks_PersonalRating", "[PersonalRating] IS NULL OR ([PersonalRating] >= 1 AND [PersonalRating] <= 5)");
+        });
     }
 }

@@ -19,8 +19,13 @@ public class ReadingSessionConfiguration : IEntityTypeConfiguration<ReadingSessi
             .IsRequired()
             .HasColumnType("datetime2");
 
-        builder.Property(rs => rs.EndTime)
+        builder.Property(rs => rs.EndDate)
             .HasColumnType("datetime2");
+
+        builder.Property(rs => rs.Duration)
+            .HasConversion(
+                v => v.HasValue ? v.Value.Ticks : (long?)null,
+                v => v.HasValue ? TimeSpan.FromTicks(v.Value) : null);
 
         builder.Property(rs => rs.StartPage)
             .IsRequired();
@@ -28,8 +33,12 @@ public class ReadingSessionConfiguration : IEntityTypeConfiguration<ReadingSessi
         builder.Property(rs => rs.EndPage)
             .IsRequired();
 
-        builder.Property(rs => rs.SessionNotes)
+        builder.Property(rs => rs.Notes)
             .HasMaxLength(1000);
+
+        builder.Property(rs => rs.CreatedAt)
+            .IsRequired()
+            .HasColumnType("datetime2");
 
         // Add a foreign key property for UserBook
         builder.Property<Guid>("UserBookId")
@@ -42,11 +51,15 @@ public class ReadingSessionConfiguration : IEntityTypeConfiguration<ReadingSessi
         builder.HasIndex(rs => rs.StartDate)
             .HasDatabaseName("IX_ReadingSessions_StartDate");
 
-        // Computed properties
+        // Computed properties - ignore these as they are calculated
         builder.Ignore(rs => rs.PagesRead);
-        builder.Ignore(rs => rs.Duration);
+        builder.Ignore(rs => rs.IsCompleted);
 
-        // Constraints
-        builder.HasCheckConstraint("CK_ReadingSessions_Pages", "[EndPage] >= [StartPage]");
+        // Constraints using modern syntax
+        builder.ToTable(t =>
+        {
+            t.HasCheckConstraint("CK_ReadingSessions_Pages", "[EndPage] >= [StartPage]");
+            t.HasCheckConstraint("CK_ReadingSessions_StartPage_NonNegative", "[StartPage] >= 0");
+        });
     }
 }

@@ -30,11 +30,11 @@ public class AddBookToLibraryCommandHandler : ICommandHandler<AddBookToLibraryCo
         var bookInfo = new BookInfo(
             request.Title,
             request.Author,
-            request.Genre,
             request.Isbn,
-            request.TotalPages,
             request.Publisher,
-            request.PublishedDate
+            request.PublishedDate?.Year,
+            request.TotalPages,
+            request.Genre
         );
 
         // Create UserBook aggregate

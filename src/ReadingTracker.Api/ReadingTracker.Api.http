@@ -1,4 +1,123 @@
-@ReadingTracker.Api_HostAddress = http://localhost:5267
+@ReadingTracker.Api_HostAddress = https://localhost:7000
+
+### Health Check
+GET {{ReadingTracker.Api_HostAddress}}/health
+
+### Get all user books
+GET {{ReadingTracker.Api_HostAddress}}/api/userbooks
+
+### Search books externally
+GET {{ReadingTracker.Api_HostAddress}}/api/booksearch/search?query=the hobbit&maxResults=5
+
+### Search book by ISBN
+GET {{ReadingTracker.Api_HostAddress}}/api/booksearch/isbn/9780544003415
+
+### Add book to library
+POST {{ReadingTracker.Api_HostAddress}}/api/userbooks
+Content-Type: application/json
+
+{
+  "bookId": "978-0544003415",
+  "bookInfo": {
+    "title": "The Hobbit",
+    "author": "J.R.R. Tolkien",
+    "isbn": "978-0544003415",
+    "publisher": "Houghton Mifflin Harcourt",
+    "publicationYear": 1937,
+    "totalPages": 310,
+    "genre": "Fantasy",
+    "description": "A reluctant hobbit, Bilbo Baggins, sets out to the Lonely Mountain with a spirited group of dwarves to reclaim their mountain home and the gold within it from the dragon Smaug.",
+    "coverImageUrl": "https://example.com/hobbit-cover.jpg"
+  },
+  "personalNotes": "Classic fantasy adventure"
+}
+
+### Update book status to reading
+PUT {{ReadingTracker.Api_HostAddress}}/api/userbooks/12345678-1234-1234-1234-123456789012/status
+Content-Type: application/json
+
+{
+  "status": "reading",
+  "date": "2024-01-15T10:00:00Z"
+}
+
+### Log reading session
+POST {{ReadingTracker.Api_HostAddress}}/api/userbooks/12345678-1234-1234-1234-123456789012/sessions
+Content-Type: application/json
+
+{
+  "sessionDate": "2024-01-15T19:00:00Z",
+  "startPage": 1,
+  "endPage": 25,
+  "endTime": "2024-01-15T20:30:00Z",
+  "sessionNotes": "Great opening chapter, loved the description of the Shire"
+}
+
+### Update reading progress
+PUT {{ReadingTracker.Api_HostAddress}}/api/userbooks/12345678-1234-1234-1234-123456789012/progress
+Content-Type: application/json
+
+{
+  "pageNumber": 150
+}
+
+### Rate book
+PUT {{ReadingTracker.Api_HostAddress}}/api/userbooks/12345678-1234-1234-1234-123456789012/rating
+Content-Type: application/json
+
+{
+  "rating": 5
+}
+
+### Update personal notes
+PUT {{ReadingTracker.Api_HostAddress}}/api/userbooks/12345678-1234-1234-1234-123456789012/notes
+Content-Type: application/json
+
+{
+  "personalNotes": "One of the best fantasy books I've ever read. Tolkien's world-building is incredible."
+}
+
+### Mark book as finished
+PUT {{ReadingTracker.Api_HostAddress}}/api/userbooks/12345678-1234-1234-1234-123456789012/status
+Content-Type: application/json
+
+{
+  "status": "finished",
+  "date": "2024-01-20T22:00:00Z"
+}
+
+### Get reading statistics
+GET {{ReadingTracker.Api_HostAddress}}/api/statistics
+
+### Get books by status
+GET {{ReadingTracker.Api_HostAddress}}/api/statistics/by-status/reading
+
+### Get recently finished books
+GET {{ReadingTracker.Api_HostAddress}}/api/statistics/recently-finished?days=30
+
+### Get books by rating
+GET {{ReadingTracker.Api_HostAddress}}/api/statistics/by-rating/5
+
+### Get books by author
+GET {{ReadingTracker.Api_HostAddress}}/api/statistics/by-author?author=tolkien
+
+### Search user books
+GET {{ReadingTracker.Api_HostAddress}}/api/userbooks/search?query=fantasy
+
+### Get statistics counts
+GET {{ReadingTracker.Api_HostAddress}}/api/statistics/counts
+
+### Get currently reading books
+GET {{ReadingTracker.Api_HostAddress}}/api/userbooks/by-status/reading
+
+### Detailed book search
+POST {{ReadingTracker.Api_HostAddress}}/api/booksearch/search
+Content-Type: application/json
+
+{
+  "query": "fantasy books tolkien middle earth",
+  "maxResults": 15
+}ngTracker.Api_HostAddress = http://localhost:5267
 
 GET {{ReadingTracker.Api_HostAddress}}/weatherforecast/
 Accept: application/json
