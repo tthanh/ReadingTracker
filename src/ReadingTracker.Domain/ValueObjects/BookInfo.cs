@@ -4,20 +4,24 @@ public record BookInfo
 {
     public string Title { get; }
     public string Author { get; }
-    public string? Genre { get; }
     public string? Isbn { get; }
-    public int? TotalPages { get; }
     public string? Publisher { get; }
-    public DateTime? PublishedDate { get; }
+    public int? PublicationYear { get; }
+    public int? TotalPages { get; }
+    public string? Genre { get; }
+    public string? Description { get; }
+    public string? CoverImageUrl { get; }
 
     public BookInfo(
         string title, 
         string author, 
-        string? genre = null,
-        string? isbn = null, 
-        int? totalPages = null,
+        string? isbn = null,
         string? publisher = null,
-        DateTime? publishedDate = null)
+        int? publicationYear = null,
+        int? totalPages = null,
+        string? genre = null,
+        string? description = null,
+        string? coverImageUrl = null)
     {
         if (string.IsNullOrWhiteSpace(title))
             throw new ArgumentException("Title cannot be empty", nameof(title));
@@ -28,13 +32,18 @@ public record BookInfo
         if (totalPages.HasValue && totalPages <= 0)
             throw new ArgumentException("Total pages must be positive", nameof(totalPages));
 
+        if (publicationYear.HasValue && (publicationYear < 1000 || publicationYear > DateTime.UtcNow.Year + 10))
+            throw new ArgumentException("Publication year must be reasonable", nameof(publicationYear));
+
         Title = title.Trim();
         Author = author.Trim();
-        Genre = genre?.Trim();
         Isbn = isbn?.Trim();
-        TotalPages = totalPages;
         Publisher = publisher?.Trim();
-        PublishedDate = publishedDate;
+        PublicationYear = publicationYear;
+        TotalPages = totalPages;
+        Genre = genre?.Trim();
+        Description = description?.Trim();
+        CoverImageUrl = coverImageUrl?.Trim();
     }
 
     public override string ToString() => $"{Title} by {Author}";
